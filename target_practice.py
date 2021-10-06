@@ -67,12 +67,24 @@ class Target_practice:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
+
     def _update_bullets(self):
         """moves bullet to end of screen and deletes it"""
         self.bullets.update()
         for bullet in self.bullets.sprites():
+            self._check_target_hit()
             if bullet.rect.right > self.screen.get_rect().width:
                 self.bullets.remove(bullet)
+        
+    
+    def _check_target_hit(self):
+        """checks if bullet has hit target"""
+        hit_space = self.screen.get_rect().width - 30
+        for bullet in self.bullets.sprites():
+            if bullet.rect.left > hit_space and not pg.sprite.spritecollideany(self.target, self.bullets):
+                self.settings.bullets_left -= 1
+ 
+            
 
     def _update_screen(self):
         """draws screen and its objects"""

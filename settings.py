@@ -9,6 +9,7 @@ class Settings:
         self.ship_width = 30
         self.ship_height = 20
         self.ship_speed = 2
+        self.ship_left = 3
 
         self.target_colour = (0, 0, 255)
         self.target_width = 10
@@ -20,3 +21,4 @@ class Settings:
         self.bullet_height = 20
         self.bullets_allowed = 2
         self.bullet_speed = 1.5
+        self.bullets_left = 5
