@@ -3,6 +3,7 @@ import pygame as pg
 from settings import Settings
 from ship import Ship
 from target import Target
+from bullet import Bullet
 
 class Target_practice:
     """class to manage game resources"""
@@ -13,12 +14,14 @@ class Target_practice:
         pg.display.set_caption(self.settings.screen_caption)
         self.ship = Ship(self)
         self.target = Target(self)
+        self.bullets = pg.sprite.Group()
 
 
     def run(self):
         while True:
             self._check_events()
             self.ship.update()
+            self._update_bullets()
             self.target.update()
             self._update_screen()
             
@@ -42,10 +45,12 @@ class Target_practice:
         """checks for key presses"""
         if event.key == pg.K_UP or event.key == pg.K_w:
             self.ship.moving_up = True
-        if event.key == pg.K_DOWN or event.key == pg.K_s:
+        elif event.key == pg.K_DOWN or event.key == pg.K_s:
             self.ship.moving_down = True
-        if event.key == pg.K_q or event.key == pg.K_ESCAPE:
+        elif event.key == pg.K_q or event.key == pg.K_ESCAPE:
             sys.exit()
+        elif event.key == pg.K_SPACE:
+            self._fire_bullets()
         
             
     def _check_keyup_events(self, event):
@@ -56,10 +61,24 @@ class Target_practice:
             self.ship.moving_down = False
 
 
+    def _fire_bullets(self):
+        """creates bullet and adds it to sprite group"""
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """moves bullet to end of screen and deletes it"""
+        self.bullets.update()
+        for bullet in self.bullets.sprites():
+            if bullet.rect.right > self.screen.get_rect().width:
+                self.bullets.remove(bullet)
+
     def _update_screen(self):
         """draws screen and its objects"""
-
         self.screen.fill(self.settings.bg_colour)
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
         self.ship.draw_ship()
         self.target.draw_target()
         pg.display.flip()
