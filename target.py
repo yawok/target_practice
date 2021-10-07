@@ -20,6 +20,13 @@ class Target:
         self.y += self.settings.target_speed
         self.rect.y = self.y
 
+
+    def center_target(self):
+        """places target at starting position"""
+        self.rect.midright = self.screen.get_rect().midright
+        self.y = float(self.rect.y)
+
+
     
     def draw_target(self):
         """draws target on screen"""

@@ -18,10 +18,14 @@ class Ship:
         if self.moving_up and self.rect.top > 0:
             self.y -= self.settings.ship_speed
         elif self.moving_down and self.rect.bottom < self.screen.get_rect().bottom:
-            self.y += self.settings.ship_speed
-            
+            self.y += self.settings.ship_speed 
         self.rect.y = self.y
     
+    def center_ship(self):
+        """places ship at starting position"""
+        self.rect.centery = self.screen.get_rect().centery
+        self.y = float(self.rect.y)
+
 
     def draw_ship(self):
         """draws ship on screen"""

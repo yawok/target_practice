@@ -5,6 +5,7 @@ from ship import Ship
 from target import Target
 from bullet import Bullet
 from button import Button
+from game_stats import GameStats
 
 class Target_practice:
     """class to manage game resources"""
@@ -17,14 +18,16 @@ class Target_practice:
         self.target = Target(self)
         self.bullets = pg.sprite.Group()
         self.play_button = Button(self, "Play")
+        self.stats  = GameStats(self)
 
 
     def run(self):
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self.target.update()
+            if self.stats.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self.target.update()
             self._update_screen()
             
 
@@ -39,9 +42,15 @@ class Target_practice:
                 self._check_keyup_events(event)
             elif event.type == pg.MOUSEBUTTONDOWN:
                 mouse_pos = pg.mouse.get_pos()
-                pass
-                #self._check_play_button()
+                self._check_play_button(mouse_pos)
+                
 
+
+    def _check_play_button(self, mouse_pos):
+        """checks if user has clicked button"""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            self._start_game()
 
     def _check_keydown_events(self, event):
         """checks for key presses"""
@@ -82,11 +91,29 @@ class Target_practice:
     def _check_target_hit(self):
         """checks if bullet has hit target"""
         hit_space = self.screen.get_rect().width - 30
-        for bullet in self.bullets.sprites():
-            if bullet.rect.left > hit_space and not pg.sprite.spritecollideany(self.target, self.bullets):
-                self.settings.bullets_left -= 1
+        if self.stats.bullets_left > 0:
+            for bullet in self.bullets.sprites():
+                if bullet.rect.left > hit_space and not pg.sprite.spritecollideany(self.target, self.bullets):
+                    self.stats.bullets_left -= 1
+        else:
+            pg.mouse.set_visible(True)
+            self.stats.game_active = False            
  
-            
+    
+    def _start_game(self):
+        """starts game when button is pressed"""
+        #resetting game statistics
+        self.stats.game_active = True
+        self.stats.reset_stats()
+        #clearing bullets
+        self.bullets.empty()
+        #centre ship and target
+        self.ship.center_ship()
+        self.target.center_target()
+        #removing mouse pointer
+        pg.mouse.set_visible(False)
+
+
 
     def _update_screen(self):
         """draws screen and its objects"""
@@ -95,7 +122,8 @@ class Target_practice:
             bullet.draw_bullet()
         self.ship.draw_ship()
         self.target.draw_target()
-        self.play_button.draw_button()
+        if not self.stats.game_active:
+            self.play_button.draw_button()
         pg.display.flip()
     
 

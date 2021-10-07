@@ -8,4 +8,4 @@ class GameStats:
     
     def reset_stats(self):
         """keeps track of game statistics"""
-        self.ship_left = self.settings.ship_left
+        self.bullets_left = self.settings.bullets_left
