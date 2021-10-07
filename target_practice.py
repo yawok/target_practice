@@ -4,6 +4,7 @@ from settings import Settings
 from ship import Ship
 from target import Target
 from bullet import Bullet
+from button import Button
 
 class Target_practice:
     """class to manage game resources"""
@@ -15,6 +16,7 @@ class Target_practice:
         self.ship = Ship(self)
         self.target = Target(self)
         self.bullets = pg.sprite.Group()
+        self.play_button = Button(self, "Play")
 
 
     def run(self):
@@ -93,6 +95,7 @@ class Target_practice:
             bullet.draw_bullet()
         self.ship.draw_ship()
         self.target.draw_target()
+        self.play_button.draw_button()
         pg.display.flip()
     
 
