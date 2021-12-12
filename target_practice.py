@@ -51,6 +51,7 @@ class Target_practice:
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
             self._start_game()
+            self.settings.initialising_dynamic_settings()
 
     def _check_keydown_events(self, event):
         """checks for key presses"""
@@ -62,7 +63,9 @@ class Target_practice:
             sys.exit()
         elif event.key == pg.K_SPACE:
             self._fire_bullets()
-        
+        elif event.key == pg.K_p:
+            self._start_game()
+            self.settings.initialising_dynamic_settings()
             
     def _check_keyup_events(self, event):
         """checks for key presses"""
@@ -97,8 +100,9 @@ class Target_practice:
                     self.stats.bullets_left -= 1
         else:
             pg.mouse.set_visible(True)
-            self.stats.game_active = False            
- 
+            self.stats.game_active = False          
+        if pg.sprite.spritecollideany(self.target, self.bullets):
+            self.settings.increase_speed()
     
     def _start_game(self):
         """starts game when button is pressed"""
